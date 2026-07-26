@@ -52,6 +52,16 @@ public:
     void checkStatus() override;
 };
 
+class SensorMonitor {
+private:
+    Sensor& sensor;
+
+public:
+    SensorMonitor(Sensor& sensor);
+
+    void display();
+};
+
 int Sensor::sensorCount = 0;
 
 Sensor::Sensor(string name)
@@ -132,6 +142,18 @@ void BatterySensor::checkStatus() {
     }
 }
 
+SensorMonitor::SensorMonitor(Sensor& sensor)
+    : sensor(sensor)
+{
+}
+
+void SensorMonitor::display() {
+    cout << "\n[" << sensor.getName() << "]" << endl;
+
+    sensor.read();
+    sensor.checkStatus();
+}
+
 int main() {
     Sensor* sensors[3];
 
@@ -143,10 +165,8 @@ int main() {
          << Sensor::getSensorCount() << endl;
 
     for (int i = 0; i < 3; ++i) {
-        cout << "\n[" << sensors[i]->getName() << "]" << endl;
-
-        sensors[i]->read();
-        sensors[i]->checkStatus();
+        SensorMonitor monitor(*sensors[i]);
+        monitor.display();
     }
 
     for (int i = 0; i < 3; ++i) {
